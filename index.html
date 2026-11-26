@@ -39,18 +39,33 @@ html,body{margin:0}
 html,body{background:var(--bg)}
 body{color:var(--ink);font-family:var(--f-ui);font-weight:500;font-size:16px;line-height:1.7;-webkit-tap-highlight-color:transparent}
 .wrap{position:relative;max-width:480px;margin:0 auto;padding-left:max(22px,env(safe-area-inset-left,0px));padding-right:max(22px,env(safe-area-inset-right,0px));padding-block:10px 130px;min-height:100%;isolation:isolate}
-header{display:flex;align-items:center;justify-content:space-between;padding-block:8px 6px;position:relative;z-index:2}
-.brand{display:flex;align-items:center;gap:8px;font-weight:900;font-size:1rem;letter-spacing:.12em}
+header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-block:22px 6px;position:relative;z-index:2}
+.brand{display:flex;align-items:center;gap:8px;white-space:nowrap;min-width:0;font-weight:900;font-size:1rem;letter-spacing:.12em}
 .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--tone);border:var(--line)}
 .brand small{font-family:var(--f-num);font-weight:500;font-size:.62rem;letter-spacing:.12em;border:1px solid var(--ink);border-radius:99px;padding:0 7px}
-.gear{background:var(--paper);border:var(--line);border-radius:50%;width:38px;height:38px;display:grid;place-items:center;cursor:pointer;color:var(--ink)}
-.gear svg{width:18px;height:18px}
-/* 飾りの図形（右上に3つだけ） */
-.decos{position:absolute;top:58px;right:max(10px,env(safe-area-inset-right,0px));width:120px;height:150px;z-index:0;pointer-events:none}
+/* 設定の入口（案C 11/26 先生が選択）：「設定」の札＋後ろから小さなうつわが顔を出す */
+.setC{position:relative;display:inline-flex;isolation:isolate}
+.setpill{position:relative;z-index:1;display:inline-flex;align-items:center;gap:7px;font:inherit;font-weight:700;font-size:.82rem;letter-spacing:.1em;color:var(--ink);background:var(--paper);border:var(--line);border-radius:99px;height:36px;padding:0 14px 0 12px;cursor:pointer;white-space:nowrap}
+.setpill::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--lav);border:1.2px solid var(--ink)}
+.setpill[aria-pressed="true"]::before{background:var(--ink)}
+.mini{position:absolute;left:50%;top:-27px;width:38px;height:34px;margin-left:-19px;z-index:0;pointer-events:none;overflow:visible}
+@media (prefers-reduced-motion:no-preference){
+  /* 開いたときに1回顔を出し、はじめの3回だけ跳ねて、あとは静かにする（見張り中に目を取られないように） */
+  .mini{transform:translateY(18px);animation:peekup .55s cubic-bezier(.3,1.6,.5,1) .7s forwards,hop 7s ease-in-out 2.2s 3}
+  @keyframes peekup{to{transform:translateY(0)}}
+  @keyframes hop{0%,86%,100%{transform:translateY(0) rotate(0)}90%{transform:translateY(-4px) rotate(-8deg)}94%{transform:translateY(0) rotate(6deg)}}
+  .mini .eye{transform-box:fill-box;transform-origin:center;animation:blinkE 5.5s 1.6s infinite}
+  @keyframes blinkE{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+}
+/* 飾りの図形：見出しの右の専用の席（幅70px）。見出しと説明はこの席に入らない幅にしてある */
+.decos{position:absolute;top:calc(72px + 22px);right:max(22px,env(safe-area-inset-right,0px));width:70px;height:96px;z-index:0;pointer-events:none}
 .decos svg{position:absolute;overflow:visible}
-.d-ring{top:0;right:18px;width:44px;height:44px}
-.d-tri{top:70px;right:72px;width:30px;height:30px}
-.d-star{top:96px;right:4px;width:34px;height:34px}
+.d-ring{top:0;right:4px;width:40px;height:40px}
+.d-tri{top:50px;left:0;width:24px;height:24px}
+.d-star{top:62px;right:0;width:28px;height:28px}
+section.panel h2{max-width:min(11em,calc(100% - 78px));word-break:keep-all;overflow-wrap:anywhere}
+section.panel .lead{max-width:calc(100% - 78px)}
+body.running .decos{display:none}
 @media (prefers-reduced-motion:no-preference){
   .d-ring{animation:spin 18s linear infinite}
   .d-tri{animation:sway 5s ease-in-out infinite}
@@ -82,7 +97,12 @@ h2{font-weight:900;font-size:1.65rem;line-height:1.45;margin:0;letter-spacing:.0
 .opts.four .opt{font-size:1.7rem;padding:12px 0}
 .other{display:flex;align-items:center;gap:8px;color:var(--sub);font-size:.88rem}
 .other input{width:6.5em}
-input[type=number],input[type=text],select,textarea{font:inherit;font-size:16px;color:var(--ink);background:var(--paper);border:var(--line);border-radius:14px;padding:10px 12px;width:100%}
+.row>button,.mini{font:inherit;font-size:.8rem;color:var(--ink);background:var(--paper);border:1px solid var(--ink);border-radius:99px;padding:3px 12px;cursor:pointer;white-space:nowrap}
+.fgrid{display:grid;grid-template-columns:auto 1fr;gap:10px 12px;align-items:center;font-size:.88rem}
+.fgrid input,.fgrid select{min-width:0;padding:8px 10px}
+.hm{display:flex;align-items:center;gap:6px}.hm input{width:4.2em}
+input[type=date],input[type=time]{-webkit-appearance:none;appearance:none;min-height:44px;text-align:left}
+input[type=number],input[type=text],input[type=date],input[type=time],select,textarea{font:inherit;font-size:16px;color:var(--ink);background:var(--paper);border:var(--line);border-radius:14px;padding:10px 12px;width:100%}
 textarea{min-height:84px;resize:vertical}
 .hint{background:var(--paper);border-radius:18px;padding:14px 18px;font-size:.9rem;border:1.5px dashed var(--ink)}
 .hint b{font-family:var(--f-num);font-weight:500;font-size:1.5rem}
@@ -130,7 +150,7 @@ details[open] summary::after{content:"－"}
 .bubble small{display:block;color:#888;font-size:.68rem}
 /* 記録一覧・目安 */
 .rows{display:flex;flex-direction:column}
-.row{display:grid;grid-template-columns:40px 1fr;gap:12px;padding:14px 0;border-bottom:1.5px dotted rgba(31,31,29,.45)}
+.row{display:grid;grid-template-columns:40px 1fr auto;gap:12px;align-items:start;padding:14px 0;border-bottom:1.5px dotted rgba(31,31,29,.45)}
 .row>div{min-width:0}
 .row .g{font-size:1.5rem;text-align:center;line-height:1.3}
 .row .m{font-size:.76rem;color:var(--sub)}
@@ -151,7 +171,7 @@ details[open] summary::after{content:"－"}
 .person{display:flex;justify-content:space-between;align-items:center;padding:12px 2px;border-bottom:1.5px dotted rgba(31,31,29,.45)}
 .person button{font:inherit;font-size:.8rem;color:var(--ink);background:var(--paper);border:1px solid var(--ink);border-radius:99px;padding:3px 12px;cursor:pointer}
 .addrow{display:flex;gap:8px}
-.addrow .btn{width:auto;padding:10px 20px;text-align:center;font-size:.95rem}
+.addrow .btn{width:auto;flex:none;white-space:nowrap;padding:10px 20px;text-align:center;font-size:.95rem}
 .addrow .btn::after{display:none}
 .qrbox{display:flex;gap:14px;align-items:center;background:var(--paper);border:var(--line);border-radius:22px;padding:14px}
 .qr{width:80px;height:80px;flex:none;border-radius:8px;background:repeating-conic-gradient(var(--ink) 0 25%,var(--paper) 0 50%) 0 0/13px 13px;border:5px solid var(--paper);outline:1px solid var(--ink)}
@@ -200,7 +220,15 @@ nav button[aria-selected="true"] i{background:var(--c);border-color:var(--ink)}
   </div>
   <header>
     <div class="brand"><span class="dot"></span>窯のノート<small id="sync">…</small></div>
-    <button class="gear" id="gear" aria-label="設定"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg></button>
+    <span class="setC" id="gearBox"><button type="button" class="setpill" id="gear" aria-pressed="false">設定</button><svg class="mini" viewBox="0 6 80 60" aria-hidden="true">
+      <path d="M8 24 Q8 60 40 60 Q72 60 72 24 Z" fill="#fcfbf8"/>
+      <path d="M8 24 Q8 31 9.5 35 Q14 31 18 36 Q22 42 27 35 Q32 29 37 34 Q42 40 47 33 Q52 28 57 35 Q61 40 65 34 Q69 30 70.5 35 Q72 31 72 24 Z" fill="var(--lav)"/>
+      <path d="M8 24 Q8 60 40 60 Q72 60 72 24" fill="none" stroke="#1f1f1d" stroke-width="2.6" stroke-linejoin="round"/>
+      <ellipse cx="40" cy="24" rx="32" ry="6.5" fill="var(--lav)" stroke="#1f1f1d" stroke-width="2.6"/>
+      <ellipse cx="40" cy="24.6" rx="26" ry="4" fill="#fcfbf8" stroke="#1f1f1d" stroke-width="2"/>
+      <circle class="eye" cx="32" cy="40" r="3.4" fill="#1f1f1d"/><circle class="eye" cx="48" cy="40" r="3.4" fill="#1f1f1d"/>
+      <circle cx="24" cy="46" r="4" fill="#f5866b" opacity=".55"/><circle cx="56" cy="46" r="4" fill="#f5866b" opacity=".55"/>
+    </svg></span>
   </header>
 
   <section class="panel" id="p-fire">
@@ -227,16 +255,18 @@ nav button[aria-selected="true"] i{background:var(--c);border-color:var(--ink)}
     <div class="steps" id="lSteps" aria-hidden="true"></div>
     <div id="lBody" style="display:flex;flex-direction:column;gap:26px"></div>
     <hr class="dots">
-    <details id="lPast"><summary id="lPastSum">これまでの記録</summary><div class="rows" id="lList"></div></details>
+    <button class="btn quiet" type="button" id="lAdd">＋ 前に焼いた記録を入れる</button>
+    <div id="lEdit"></div>
+    <details id="lPast"><summary id="lPastSum">これまでの記録</summary><p class="note" style="text-align:center;margin:10px 0 0">「直す」で時間や出来をあとから直せます。</p><div class="rows" id="lList"></div></details>
   </section>
 
   <section class="panel" id="p-guide" hidden>
     <span class="tag">GUIDE</span>
-    <h2>扉を閉めるまで、<br>どのくらい？</h2>
+    <h2>扉を<wbr>閉めるまで、<br>どのくらい？</h2>
     <div class="guide" id="gList"></div>
     <p class="note">「見本」を含みます。焼くほど正確になります。</p>
     <hr class="dots">
-    <h2>プログラムの<br>全体の時間</h2>
+    <h2>プログラムの<br>全体の<wbr>時間</h2>
     <p class="lead">最高温度のねらしが終わるまで。</p>
     <div class="guide" id="gProg"></div>
   </section>
@@ -250,7 +280,16 @@ nav button[aria-selected="true"] i{background:var(--c);border-color:var(--ink)}
     <div class="qrbox"><div class="qr" role="img" aria-label="LINE 友だち追加用QRコードの見本"></div>
       <p class="note" style="margin:0">LINE のお知らせは準備中です。できたら、このQRで友だち追加して「登録」と送るだけになります。</p></div>
     <hr class="dots">
-    <h2>自作プログラム</h2>
+    <h2>直して<wbr>ほしいこと</h2>
+    <p class="lead">使いにくいところや、ほしい機能を書いて送ってください。</p>
+    <div class="pform">
+      <label class="other" style="justify-content:space-between">どの画面のこと？<select id="rqScreen" style="width:auto"><option>焼く</option><option>記録</option><option>目安</option><option>設定</option><option>そのほか</option></select></label>
+      <textarea id="rqText" maxlength="2000" placeholder="例：記録の画面で、写真を3枚まで入れたい" aria-label="直してほしいこと"></textarea>
+      <div class="actions"><button class="btn tone" type="button" id="rqSend">送る</button><div class="msg" id="rqMsg" role="status"></div></div>
+    </div>
+    <div class="rows" id="rqList"></div>
+    <hr class="dots">
+    <h2>自作<wbr>プログラム</h2>
     <p class="lead">窯の「B 自作」に入れた設定。</p>
     <div id="prList"></div>
     <button class="btn quiet" type="button" id="prNew">＋ プログラムを追加</button>
@@ -388,7 +427,7 @@ function renderWizard(){
   const nav=(label,ok=true,tone=false)=>`<div class="actions"><button class="btn ${tone?'tone':''}" id="fNext" ${ok?'':'disabled'}>${label}</button>${F.step?'<button class="btn quiet" id="fBack">ひとつ戻る</button>':''}<div class="msg" id="fMsg" role="status"></div></div>`;
   if(F.step===0){
     const mine=PROGS.filter(p=>p.mine).map(p=>p.id),base=PROGS.filter(p=>!p.mine);
-    b.innerHTML=`<h2>どのプログラムで<br>焼きますか？</h2>${opts(mine,{selected:[F.prog],fmt:id=>prog(id).name,sub:id=>id})}
+    b.innerHTML=`<h2>どの<wbr>プログラムで<br>焼きますか？</h2>${opts(mine,{selected:[F.prog],fmt:id=>prog(id).name,sub:id=>id})}
       <label class="other" style="justify-content:space-between">基本プログラム<select id="fBase" style="width:auto"><option value="">使わない</option>${base.map(p=>`<option value="${p.id}" ${p.id===F.prog?'selected':''}>${p.id} ${esc(p.name)}</option>`).join('')}</select></label>
       <div class="hint" id="fPI"></div>${nav('つぎへ')}`;
     const upd=()=>{const i=progInfo(F.prog);$('fPI').innerHTML=!F.prog?'プログラムを選んでください。':i?`${esc(pname(F.prog))}<br>最高 <b>${i.max}℃</b> ・ 全体 <b>${dur(i.total)}</b><small>全体＝最高温度のねらしが終わるまで。そのあと冷めるのを待ちます。</small>`:`${esc(pname(F.prog))}<small>このプログラムの設定はまだ入っていません。</small>`};
@@ -400,14 +439,14 @@ function renderWizard(){
     bindOpts(b,{onChange:()=>{F.temp=+pickedIn(b)[0];$('fTemp').value=''}});
     $('fTemp').oninput=e=>{const v=parseInt(e.target.value,10);if(!isNaN(v)){F.temp=v;b.querySelectorAll('.opt').forEach(x=>x.setAttribute('aria-pressed','false'))}};
   }else if(F.step===2){
-    b.innerHTML=`<h2>扉の開き具合は？</h2>${opts(OPT.door,{selected:[F.door]})}
+    b.innerHTML=`<h2>扉の<wbr>開き具合は？</h2>${opts(OPT.door,{selected:[F.door]})}
       <div class="hint" id="fEst"></div>${nav('つぎへ')}`;
     const upd=()=>{const e=F.door?estimate(F.temp,F.door,F.prog):null,i=progInfo(F.prog);
       $('fEst').innerHTML=(e?`${F.temp}℃・${esc(F.door)}なら、閉めるまで<br><b>約 ${dur(e.min)}</b><small>${e.exact?`これまで ${e.n} 回の平均`:`${esc(F.prog)} の設定から計算。扉を開けていると、少しおくれることがあります。`}</small>`:`閉めるまでの目安は、まだ出せません。<small>今回の結果が、次からの目安になります。</small>`)
         +(i?`<small style="margin-top:6px">全体（焼き上がり）まで 約 ${dur(i.total)}</small>`:'')};
     bindOpts(b,{onChange:()=>{F.door=pickedIn(b)[0];upd()}});upd();
   }else if(F.step===3){
-    b.innerHTML=`<h2>だれに<br>お知らせしますか？</h2><p class="lead">いくつでも選べます。</p>${opts(S.people,{selected:F.who,cls:'',sub:v=>v==='自分'?'あなた':'共同作業者'})}${nav('つぎへ')}`;
+    b.innerHTML=`<h2>だれに<br>お知らせ<wbr>しますか？</h2><p class="lead">いくつでも選べます。</p>${opts(S.people,{selected:F.who,cls:'',sub:v=>v==='自分'?'あなた':'共同作業者'})}${nav('つぎへ')}`;
     bindOpts(b,{single:false,onChange:()=>{F.who=pickedIn(b)}});
   }else{
     b.innerHTML=`<h2>窯のブザーを<br>${F.temp}℃に<br>しましたか？</h2>
@@ -438,7 +477,7 @@ function renderWizard(){
 const act=()=>S.firings.find(f=>f.id===S.active);
 let closer='自分';
 function renderFire(){
-  const f=act();$('wizard').hidden=!!f;$('running').hidden=!f;
+  const f=act();$('wizard').hidden=!!f;$('running').hidden=!f;decoState();
   if(!f){newDraft();renderWizard();return}
   const e=estimate(f.temp,f.door,f.prog),st=$('stage'),pi=progInfo(f.prog);
   const endAt=pi?`焼き上がり ${hm(f.start+pi.total*6e4)}ごろ`:'';
@@ -446,8 +485,10 @@ function renderFire(){
     st.innerHTML=`${chara('var(--lav)','happy','hero-chara')}
       <div class="state">扉を閉めました</div>
       <div class="big">${hm(f.closed)}</div>
-      <div class="meta">${f.closer==='自分'?'あなた':esc(f.closer)}が閉めました ・ 焼き始めから ${dur((f.closed-f.start)/6e4)}${endAt?`<br>${endAt}（そのあと冷めるのを待つ）`:''}</div>
-      <div class="actions" style="width:100%;margin-top:14px"><button class="btn" id="rFinish">窯出しの記録へ</button><span class="note">冷めて「End」が出てから</span></div>`;
+      <div class="meta">${f.closer==='自分'?'あなた':esc(f.closer)}が閉めました ・ 焼き始めから ${dur((f.closed-f.start)/6e4)}${f.ended?`<br>焼き上がり ${hm(f.ended)}（焼き始めから ${dur((f.ended-f.start)/6e4)}）`:endAt?`<br>${endAt}（そのあと冷めるのを待つ）`:''}</div>
+      ${f.ended?'':'<button type="button" class="pill" id="rEnded" style="margin-top:10px">プログラムが終わった（いま）</button>'}
+      <div class="actions" style="width:100%;margin-top:14px"><button class="btn" id="rFinish">窯出しの記録へ</button><span class="note">冷めて「End」が出てから ・ 時刻はあとから「直す」でも入れられます</span></div>`;
+    if($('rEnded'))$('rEnded').onclick=()=>{f.ended=Date.now();save();sync({a:'saveFiring',firing:f});renderFire();renderGuide();peek('焼き上がり、おぼえたよ','var(--lav)','happy')};
     $('rFinish').onclick=()=>{S.active=null;save();L={step:0,id:f.id};renderFire();renderLog();show('log')};
   }else{
     const alert=!!f.buzz;
@@ -494,7 +535,7 @@ function renderLog(){
     bindOpts(b,{onChange:()=>{L.grade=pickedIn(b)[0];if(L.grade==='◎')peek('やったね！','var(--lav)','happy')}});
     const w=$('lWhich');if(w)w.onchange=e=>{L.id=e.target.value==='none'?'none':+e.target.value;renderLog()};
   }else if(L.step===1){
-    b.innerHTML=`<h2>気になったところは？</h2><p class="lead">なければ「問題なし」。</p>${opts(OPT.issue,{selected:L.issue||[]})}${nav('つぎへ')}`;
+    b.innerHTML=`<h2>気になった<wbr>ところは？</h2><p class="lead">なければ「問題なし」。</p>${opts(OPT.issue,{selected:L.issue||[]})}${nav('つぎへ')}`;
     bindOpts(b,{single:false,onChange:()=>{L.issue=pickedIn(b)}});
   }else if(L.step===2){
     const prev=S.firings.find(x=>x.rec&&x.id!==L.id);
@@ -521,12 +562,105 @@ function renderLog(){
   };
   const back=$('lBack');if(back)back.onclick=()=>{L.step--;renderLog()};
   // 過去の記録
-  const done=S.firings.filter(x=>x.rec);$('lPastSum').textContent=`これまでの記録（${done.length}）`;
-  $('lList').innerHTML=done.map(x=>`<div class="row"><div class="g">${x.rec.grade}</div><div>
-    <div class="m">${md(x.start)}${x.closed?` ・ ${x.temp}℃・${esc(x.door)}・${dur((x.closed-x.start)/6e4)}`:''}${x.sample?' ・ 見本':''}</div>
-    <div class="t">${[x.rec.clay.join('・'),x.rec.glaze.join('・'),x.rec.issue.join('・')].filter(Boolean).map(esc).join(' ／ ')}</div>
-    ${x.rec.memo?`<div class="t">${esc(x.rec.memo)}</div>`:''}</div></div>`).join('');
+  const done=S.firings.filter(x=>x.id!==S.active);$('lPastSum').textContent=`これまでの記録（${done.length}）`;
+  $('lList').innerHTML=done.map(x=>`<div class="row"><div class="g">${x.rec?x.rec.grade:'<span class="note">まだ</span>'}</div><div>
+    <div class="m">${md(x.start)}${x.prog?` ・ ${esc(x.prog)}`:''}${x.temp?` ・ ${x.temp}℃`:''}${x.door?`・${esc(x.door)}`:''}${x.sample?' ・ 見本':''}</div>
+    ${x.closed||x.ended?`<div class="m">${x.closed?`閉めるまで ${dur((x.closed-x.start)/6e4)}`:''}${x.closed&&x.ended?' ・ ':''}${x.ended?`焼き上がりまで ${dur((x.ended-x.start)/6e4)}`:''}${x.approx?'':` （${hm(x.start)}〜）`}</div>`:''}
+    ${x.rec?`<div class="t">${[x.rec.clay.join('・'),x.rec.glaze.join('・'),x.rec.issue.join('・')].filter(Boolean).map(esc).join(' ／ ')}</div>
+    ${x.rec.memo?`<div class="t">${esc(x.rec.memo)}</div>`:''}`:''}</div><button type="button" data-id="${x.id}">直す</button></div>`).join('');
+  $('lList').querySelectorAll('button[data-id]').forEach(b=>b.onclick=()=>openRec(+b.dataset.id));
 }
+
+// ===== 記録の追加・直し（前に焼いた分・時間の直し） =====
+let RE=null; // 編集中 {id, del, mode, grade, issue, clay, glaze}
+const pad2=n=>String(n).padStart(2,'0');
+const dstr=t=>{const d=new Date(t);return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`};
+const tstr=t=>{const d=new Date(t);return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`};
+function openRec(id){
+  const f=id?S.firings.find(x=>x.id===id):null,r=(f&&f.rec)||{};
+  RE={id:f?f.id:null,del:false,mode:f&&f.approx?'dur':'time',grade:r.grade||null,issue:r.issue||[],clay:r.clay||[],glaze:r.glaze||[]};
+  const since=t=>f&&t?Math.round((t-f.start)/6e4):null;
+  const hmIn=(k,m)=>`<span class="hm"><input type="number" inputmode="numeric" min="0" max="99" id="${k}H" value="${m==null?'':Math.floor(m/60)}" aria-label="時間">時間<input type="number" inputmode="numeric" min="0" max="59" id="${k}M" value="${m==null?'':m%60}" aria-label="分">分</span>`;
+  const allP=PROGS.map(p=>`<option value="${p.id}" ${f&&f.prog===p.id?'selected':''}>${p.id} ${esc(p.name)}</option>`).join('');
+  $('lEdit').innerHTML=`<div class="pform">
+    <div class="tag">${f?'記録を直す':'前に焼いた記録'}</div>
+    <div class="fgrid"><span>焼いた日</span><input type="date" id="reDate" value="${dstr(f?f.start:Date.now())}"></div>
+    <div class="closer" id="reMode"><button type="button" class="pill" data-v="time">時刻で入れる</button><button type="button" class="pill" data-v="dur">かかった時間で入れる</button></div>
+    <div class="fgrid" id="reTime">
+      <span>焼き始め</span><input type="time" id="reStart" value="${f&&!f.approx?tstr(f.start):''}">
+      <span>扉を閉めた</span><input type="time" id="reClosed" value="${f&&!f.approx&&f.closed?tstr(f.closed):''}">
+      <span>焼き上がり</span><input type="time" id="reEnd" value="${f&&!f.approx&&f.ended?tstr(f.ended):''}">
+    </div>
+    <div class="fgrid" id="reDur">
+      <span>閉めるまで</span>${hmIn('reC',since(f&&f.closed))}
+      <span>焼き上がりまで</span>${hmIn('reE',since(f&&f.ended))}
+    </div>
+    <p class="note" style="margin:-4px 0 0">焼き上がり＝窯のプログラムが終わったとき。わからない欄は空のままで大丈夫です。</p>
+    <div class="fgrid">
+      <span>プログラム</span><select id="reProg"><option value="">わからない</option>${allP}</select>
+      <span>閉めた温度</span><span class="hm"><input type="number" inputmode="numeric" min="100" max="900" step="10" id="reTemp" value="${f&&f.temp?f.temp:''}" style="width:6em">℃</span>
+      <span>開き具合</span><select id="reDoor"><option value="">わからない</option>${OPT.door.map(d=>`<option ${f&&f.door===d?'selected':''}>${d}</option>`).join('')}</select>
+      <span>閉めた人</span><select id="reWho"><option value="">—</option>${[...new Set([...S.people,...(f&&f.closer?[f.closer]:[])])].map(p=>`<option value="${esc(p)}" ${f&&f.closer===p?'selected':''}>${p==='自分'?'わたし':esc(p)}</option>`).join('')}</select>
+    </div>
+    <div class="hint" id="rePrev"></div>
+    <hr class="dots">
+    <div class="tag">出来</div><div id="reG">${opts(['◎','○','△','×'],{selected:[RE.grade],cls:'four'})}</div>
+    <p class="note" style="margin:-8px 0 0;text-align:center">出来を選ぶと、下の項目も記録されます</p>
+    <div id="reMore">
+      <div class="tag">気になったところ</div><div id="reI" style="margin:10px 0 16px">${opts(OPT.issue,{selected:RE.issue})}</div>
+      <div class="tag">土</div><div id="reC2" style="margin:10px 0 16px">${opts([...new Set([...OPT.clay,...RE.clay])],{selected:RE.clay})}</div>
+      <div class="tag">釉薬・絵の具</div><div id="reGl" style="margin:10px 0 16px">${opts([...new Set([...OPT.glaze,...RE.glaze])],{selected:RE.glaze})}</div>
+      <textarea id="reMemo" placeholder="メモ" aria-label="メモ">${esc(r.memo||'')}</textarea>
+    </div>
+    <div class="actions"><button class="btn tone" type="button" id="reSave">保存する</button>
+      ${f?'<button class="btn quiet" type="button" id="reDel">この記録を消す</button>':''}
+      <button class="btn quiet" type="button" id="reCancel">やめる</button><div class="msg" id="reMsg" role="status"></div></div></div>`;
+  const setMode=m=>{RE.mode=m;$('reTime').hidden=m!=='time';$('reDur').hidden=m!=='dur';
+    $('reMode').querySelectorAll('.pill').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===m)));prev()};
+  $('reMode').querySelectorAll('.pill').forEach(b=>b.onclick=()=>setMode(b.dataset.v));
+  bindOpts($('reG'),{onChange:()=>{RE.grade=pickedIn($('reG'))[0]||null}});
+  bindOpts($('reI'),{single:false,onChange:()=>{RE.issue=pickedIn($('reI'))}});
+  bindOpts($('reC2'),{single:false,onChange:()=>{RE.clay=pickedIn($('reC2'))}});
+  bindOpts($('reGl'),{single:false,onChange:()=>{RE.glaze=pickedIn($('reGl'))}});
+  const prev=()=>{const t=readTimes();if(t.err){$('rePrev').innerHTML=esc(t.err);return}
+    const p=$('reProg').value,i=p?progInfo(p):null;
+    $('rePrev').innerHTML=(t.closed?`閉めるまで <b>${dur((t.closed-t.start)/6e4)}</b><br>`:'')+(t.ended?`焼き上がりまで <b>${dur((t.ended-t.start)/6e4)}</b>`:'')
+      +(t.ended&&i?`<small>${esc(p)} の予定は ${dur(i.total)} → ${(()=>{const d=Math.round((t.ended-t.start)/6e4-i.total);return d===0?'予定どおり':d>0?`${d}分おそい`:`${-d}分はやい`})()}</small>`:'')
+      +(!t.closed&&!t.ended?'時間を入れると、ここに出ます。':'')};
+  $('lEdit').querySelectorAll('input,select').forEach(x=>{x.oninput=prev;x.onchange=prev});
+  setMode(RE.mode);
+  $('reCancel').onclick=closeRec;
+  if(f)$('reDel').onclick=e=>{if(!RE.del){RE.del=true;e.target.textContent='本当に消す';return}
+    S.firings=S.firings.filter(x=>x.id!==f.id);save();sync({a:'deleteFiring',id:f.id});closeRec();renderLog();renderGuide();peek('消したよ','var(--lemon)','wait')};
+  $('reSave').onclick=()=>{const m=$('reMsg'),t=readTimes();
+    if(t.err){m.textContent=t.err;return}
+    const temp=parseInt($('reTemp').value,10);
+    if($('reTemp').value&&!(temp>=100&&temp<=900)){m.textContent='閉めた温度は100〜900℃で入れてください。';return}
+    // 1分ごとの読み直しで S.firings が入れかわっていても、いまの行を直す
+    const cur=f&&S.firings.find(x=>x.id===f.id),g=cur||{id:f?f.id:Date.now(),who:f?f.who:[]};
+    Object.assign(g,{start:t.start,closed:t.closed,ended:t.ended,approx:RE.mode==='dur',prog:$('reProg').value,temp:isNaN(temp)?null:temp,door:$('reDoor').value||null,closer:$('reWho').value||null});
+    g.rec=RE.grade?{grade:RE.grade,issue:RE.issue,clay:RE.clay,glaze:RE.glaze,memo:$('reMemo').value.trim()}:null;
+    if(!cur)S.firings.push(g);S.firings.sort((a,b)=>(b.start||0)-(a.start||0));
+    save();sync({a:'saveFiring',firing:g});closeRec();renderLog();renderGuide();$('lPast').open=true;peek(f?'直したよ！':'入れたよ。目安が育つね','var(--lav)','happy')};
+  $('lEdit').scrollIntoView({behavior:'smooth',block:'start'});
+}
+// 日付＋時刻（または かかった時間）から ミリ秒を作る。日をまたいだら次の日にする
+function readTimes(){
+  const dv=$('reDate').value;if(!dv)return {err:'焼いた日を入れてください。'};
+  const [y,mo,d]=dv.split('-').map(Number);
+  if(RE.mode==='dur'){
+    const mins=k=>{const h=$(k+'H').value,mm=$(k+'M').value;if(h===''&&mm==='')return null;return (+h||0)*60+(+mm||0)};
+    const start=new Date(y,mo-1,d,9,0).getTime(),c=mins('reC'),e=mins('reE');
+    if(c!=null&&e!=null&&e<c)return {err:'焼き上がりは、閉めたあとの時間にしてください。'};
+    return {start,closed:c?start+c*6e4:null,ended:e?start+e*6e4:null};
+  }
+  const at=(v,after)=>{if(!v)return null;const [h,mm]=v.split(':').map(Number);let t=new Date(y,mo-1,d,h,mm).getTime();while(after!=null&&t<=after)t+=864e5;return t};
+  const sv=$('reStart').value;if(!sv)return ($('reClosed').value||$('reEnd').value)?{err:'焼き始めの時刻を入れてください。'}:{start:new Date(y,mo-1,d,9,0).getTime(),closed:null,ended:null};
+  const start=at(sv),closed=at($('reClosed').value,start),ended=at($('reEnd').value,closed||start);
+  return {start,closed,ended};
+}
+function closeRec(){RE=null;$('lEdit').innerHTML=''}
+$('lAdd').onclick=()=>openRec(null);
 
 // ===== 目安 =====
 function renderGuide(){
@@ -538,7 +672,8 @@ function renderGuide(){
     :`<div class="hint">まだ記録がありません。<small>扉を閉めたときに「扉を閉めました」を押すと、ここにたまります。</small></div>`;
   const mine=PROGS.filter(p=>p.mine),pmax=Math.max(...mine.map(p=>progInfo(p.id)?.total||0),1);
   const hd=m=>dur(m).replace('時間','<small style="font-size:.8rem">時間</small>').replace('分','<small style="font-size:.8rem">分</small>');
-  $('gProg').innerHTML=mine.map(p=>{const i=progInfo(p.id);return `<div class="gcard"><div class="k">${esc(p.name)}<small>${p.id}${i?` ・ 最高 ${i.max}℃`:' ・ 設定はまだ'}</small></div><div class="v">${i?hd(i.total):'—'}</div>${i?`<div class="bar"><i style="width:${(i.total/pmax*100).toFixed(0)}%"></i></div>`:''}</div>`}).join('');
+  const real=id=>{const v=S.firings.filter(f=>f.prog===id&&f.ended&&f.start).map(f=>(f.ended-f.start)/6e4);return v.length?{avg:v.reduce((a,b)=>a+b)/v.length,n:v.length}:null};
+  $('gProg').innerHTML=mine.map(p=>{const i=progInfo(p.id),r=real(p.id);return `<div class="gcard"><div class="k">${esc(p.name)}<small>${p.id}${i?` ・ 最高 ${i.max}℃`:' ・ 設定はまだ'}</small>${r?`<small>実際は 平均 ${dur(r.avg)}（${r.n}回）</small>`:''}</div><div class="v">${i?hd(i.total):'—'}</div>${i?`<div class="bar"><i style="width:${(i.total/pmax*100).toFixed(0)}%"></i></div>`:''}</div>`}).join('');
 }
 
 // ===== 設定 =====
@@ -589,6 +724,24 @@ function closeProg(){PE=null;$('prEdit').innerHTML=''}
 function afterProg(msg){save();refreshProgs();closeProg();renderPrograms();renderGuide();renderFire();$('setMsg').textContent=msg}
 $('prNew').onclick=()=>openProg(null);
 
+
+// ===== 修正依頼ポスト =====
+// 送った依頼はスプレッドシートの「修正依頼」へ。先生の PC が5分おきに読んで、状態と返事を書きもどす。
+const RQ_STATE={'受付待ち':'送りました','受付':'受け付けました','対応中':'直し方を考えています','できました':'できました','見送り':'今回は見送り'};
+function renderRequests(){
+  const list=S.requests||[];
+  $('rqList').innerHTML=list.map(q=>{const late=q.state==='受付待ち'&&q.at&&Date.now()-q.at>24*3600e3;
+    return `<div class="row" style="grid-template-columns:1fr auto"><div>
+      <div class="m">${md(q.at)} ・ ${esc(q.screen||'')}</div><div class="t">${esc(q.text)}</div>
+      ${q.reply?`<div class="t" style="margin-top:4px">↳ ${esc(q.reply)}</div>`:''}
+      ${late?'<div class="note" style="color:#c4482c">まだ受け付けられていません。先生のパソコンが止まっているかもしれません。</div>':''}</div>
+      <span class="tag" style="align-self:start">${esc(RQ_STATE[q.state]||q.state)}</span></div>`}).join('');
+}
+$('rqSend').onclick=()=>{const t=$('rqText').value.trim(),m=$('rqMsg');
+  if(!t){m.style.color='';m.textContent='直してほしいことを書いてください。';return}
+  const q={id:Date.now(),screen:$('rqScreen').value,text:t.slice(0,2000)};
+  S.requests=[{...q,at:q.id,state:'受付待ち',reply:''},...(S.requests||[])];save();sync({a:'saveRequest',request:q});
+  $('rqText').value='';m.style.color='#2f9a68';m.textContent='届きました。ありがとうございます！';renderRequests();peek('とどけたよ！','var(--lav)','happy')};
 // ===== ブザーの聞き取り =====
 // 窯のブザー＝約2275Hz（11/25 録音の分析）。その高さの音が、ほかの音より30dB以上強く、2秒続いたら「ブザー」。
 const BZ={lo:2150,hi:2400,db:30,hold:2,scale:70};
@@ -651,12 +804,14 @@ $('earFile').onchange=async e=>{
 
 // ===== タブ =====
 let cur='fire';
+// 焼成中の「焼く」画面は大きなカードが上にあるので、飾りの席をしまう
+function decoState(){document.body.classList.toggle('running',cur==='fire'&&!!act())}
 function show(t){if(t!=='set')earStop();cur=t;document.documentElement.style.setProperty('--tone',TONE[t]);
   document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.t===t)));
-  ['fire','log','guide','set'].forEach(n=>$('p-'+n).hidden=n!==t);try{localStorage.setItem('kiln-note-tab3',t)}catch(e){}window.scrollTo(0,0)}
+  ['fire','log','guide','set'].forEach(n=>$('p-'+n).hidden=n!==t);decoState();$('gear').textContent=t==='set'?'閉じる':'設定';$('gear').setAttribute('aria-pressed',String(t==='set'));try{localStorage.setItem('kiln-note-tab3',t)}catch(e){}window.scrollTo(0,0)}
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.t));
 $('gear').onclick=()=>show(cur==='set'?'fire':'set');
-function renderAll(){renderFire();renderLog();renderGuide();renderPeople();renderPrograms()}
+function renderAll(){renderFire();renderLog();renderGuide();renderPeople();renderPrograms();renderRequests()}
 // ===== 保存先（スプレッドシート）とのやりとり =====
 // 変更はまず端末に置き、順番に送る。送れなかった分は端末に残して、あとで送り直す。
 const CFGK='kiln-note-cfg',QK='kiln-note-queue';
@@ -673,22 +828,25 @@ async function flush(){
   if(flushing||!CFG)return;flushing=true;clearTimeout(retry);let last=null;
   try{while(Q.length){syncState('保存中…');last=await api(Q[0]);Q.shift();saveQ()}
     if(last&&last.data)applyServer(last.data);syncState('保存済み')}
-  catch(e){syncState(e.message==='bad_key'?'合言葉ちがい':'まだ送れていません');retry=setTimeout(flush,30000)}
+  catch(e){
+    // 保存先が古い（修正依頼などを知らない）ときは、その1件だけあきらめて残りを送る
+    if(e.message==='unknown_action'){Q.shift();saveQ();flushing=false;syncState('保存先が古い');setTimeout(flush,0);return}
+    syncState(e.message==='bad_key'?'合言葉ちがい':'まだ送れていません');retry=setTimeout(flush,30000)}
   finally{flushing=false}}
 async function pull(){
   if(!CFG)return;if(Q.length){flush();return}
   try{const d=await api({a:'load'});if(Q.length||flushing)return;applyServer(d.data);syncState('保存済み')}
   catch(e){syncState(e.message==='bad_key'?'合言葉ちがい':'オフライン')}}
 function applyServer(d){
-  S.firings=d.firings||[];S.progs=d.progs||[];S.people=(d.people&&d.people.length)?d.people:['自分'];
+  S.firings=d.firings||[];S.progs=d.progs||[];S.requests=d.requests||[];S.people=(d.people&&d.people.length)?d.people:['自分'];
   if(S.active&&!S.firings.some(f=>f.id===S.active))S.active=null;
   if(!S.active){const o=S.firings.find(f=>!f.closed&&!f.rec&&f.start&&Date.now()-f.start<36*3600e3);if(o)S.active=o.id}
   save();refreshProgs();
-  if(F.step>0||L.step>0||PE){renderGuide();renderPeople();renderPrograms()}else{L={step:0};renderAll()}}
+  if(F.step>0||L.step>0||PE||RE){renderGuide();renderPeople();renderPrograms();renderRequests()}else{L={step:0};renderAll()}}
 
 // ===== はじめにつなぐ =====
 function showSetup(){document.querySelectorAll('section.panel').forEach(x=>x.hidden=x.id!=='p-setup');
-  document.querySelector('nav').hidden=true;$('gear').hidden=true;syncState('未接続')}
+  document.querySelector('nav').hidden=true;$('gearBox').hidden=true;syncState('未接続')}
 $('cfgGo').onclick=async()=>{
   const url=$('cfgUrl').value.trim(),key=$('cfgKey').value.trim(),m=$('cfgMsg');
   if(!/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(url)){m.textContent='URL を確かめてください（https://script.google.com/macros/s/…/exec）';return}
@@ -703,7 +861,7 @@ $('cfgReset').onclick=e=>{if(!cfgArm){cfgArm=true;e.target.textContent='本当�
 
 let first='fire';try{first=localStorage.getItem('kiln-note-tab3')||'fire'}catch(e){}
 function start(){
-  $('p-setup').hidden=true;document.querySelector('nav').hidden=false;$('gear').hidden=false;
+  $('p-setup').hidden=true;document.querySelector('nav').hidden=false;$('gearBox').hidden=false;
   $('cfgInfo').textContent=`スプレッドシートにつながっています（…${CFG.url.slice(-14,-5)}）`;
   renderAll();show(first);syncState(Q.length?'まだ送れていません':'読み込み中…');pull();
   setTimeout(()=>{if(cur==='fire'&&!act())peek('こんにちは。今日も焼く？','var(--lemon)','happy')},900);
